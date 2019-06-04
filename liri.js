@@ -5,6 +5,7 @@ var keys = require("./keys.js");
 var fs = require("fs");
 var Spotify = require("node-spotify-api");
 var axios = require("axios");
+var moment = require("moment");
 
 var filename = "./log.txt";
 var spotify = new Spotify(keys.spotify);
@@ -16,14 +17,28 @@ switch(process.argv[2]){
         var artist = process.argv[3];
         var bandsInTownAPI = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
         var dataArr = [];
+        fs.appendFile("log.txt", "\n\n=======================================\nConcerts for " + artist + "\n", function(err){
+            if(err){
+                return console.log(err);
+            }
+        });
         axios.get(bandsInTownAPI).then(function(response){
             for (key in response){
                 dataArr.push(response[key]);
             }
             for(key in dataArr[5]){
+                var date = new Date(dataArr[5][key].datetime);
+                fs.appendFile("log.txt", "\nVenue: " + dataArr[5][key].venue.name 
+                + "\nVenue Location: " + dataArr[5][key].venue.city + ", " + dataArr[5][key].venue.region 
+                + "\nDate: " + moment(date).format("L")
+                + "\n=======================================", function(err){
+                    if(err){
+                        return console.log(err);
+                    }
+                })
                 console.log("Venue: " + dataArr[5][key].venue.name 
                 + "\nVenue Location: " + dataArr[5][key].venue.city + ", " + dataArr[5][key].venue.region 
-                + "\nDate: " + dataArr[5][key].datetime
+                + "\nDate: " + moment(date).format("L")
                 + "\n=======================================");
                 //Need to fix date format with moment.js
             }            
@@ -52,6 +67,12 @@ switch(process.argv[2]){
             //Needs fixing
         }
         var dataArr = [];
+        fs.appendFile("log.txt", "\n\n===================================================================\nSpotify Songs matching "
+         + songName + "\n", function(err){
+            if(err){
+                return console.log(err);
+            }
+        })
         spotify.search({type: 'track', query: songName}, function(err, data){
             if(err){
                 return console.log("Error occrurred: " + err);
@@ -60,7 +81,16 @@ switch(process.argv[2]){
                 dataArr.push(data[key]);
             }
             for(var i = 0; i < dataArr[0].items.length; i++){
-                console.log("Artist: " + dataArr[0].items[i].artists[0].name
+                fs.appendFile("log.txt", "\nArtist: " + dataArr[0].items[i].artists[0].name
+                + "\nSong: " + dataArr[0].items[i].name
+                + "\nAlbum: " + dataArr[0].items[i].album.name
+                + "\nSpotify Link: " + dataArr[0].items[i].external_urls.spotify 
+                + "\n===================================================================", function(err){
+                    if(err){
+                        return console.log(err);
+                    }
+                })
+                console.log("\nArtist: " + dataArr[0].items[i].artists[0].name
                 + "\nSong: " + dataArr[0].items[i].name
                 + "\nAlbum: " + dataArr[0].items[i].album.name
                 + "\nSpotify Link: " + dataArr[0].items[i].external_urls.spotify 
@@ -77,11 +107,29 @@ switch(process.argv[2]){
         }
         var omdbURL = "http://www.omdbapi.com/?apikey=trilogy&t=" + movieName;
         var dataArr = [];
+        fs.appendFile("log.txt", "\n\n======================================\n", function(err){
+            if(err){
+                return console.log(err);
+            }
+        });
         axios.get(omdbURL).then(function(response){
             for(key in response){
                 dataArr.push(response[key]);
             }
-            //console.log(response);         
+            //console.log(response);  
+            fs.appendFile("log.txt", "Title: " + dataArr[5].Title 
+            + "\nYear: " + dataArr[5].Year 
+            + "\nIMDB Rating: " + dataArr[5].Ratings[0].Value
+            + "\nRotten Tomatoes: " + dataArr[5].Ratings[1].Value
+            + "\nCountry of Origin: " + dataArr[5].Country
+            + "\nLanguage: " + dataArr[5].Language
+            + "\nPlot: " + dataArr[5].Plot 
+            + "\nActors: " + dataArr[5].Actors
+            + "\n======================================", function(err){
+                if(err){
+                    return console.log(err);
+                }
+            });       
             console.log("Title: " + dataArr[5].Title 
             + "\nYear: " + dataArr[5].Year 
             + "\nIMDB Rating: " + dataArr[5].Ratings[0].Value
@@ -89,7 +137,8 @@ switch(process.argv[2]){
             + "\nCountry of Origin: " + dataArr[5].Country
             + "\nLanguage: " + dataArr[5].Language
             + "\nPlot: " + dataArr[5].Plot 
-            + "\nActors: " + dataArr[5].Actors);
+            + "\nActors: " + dataArr[5].Actors
+            + "\n======================================");
         }).catch(function(error){
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -120,13 +169,19 @@ switch(process.argv[2]){
         break;
 }
 
-function spotifyThis(song){
-    if(song === undefined){
-        song = "The Sign";
+function spotifyThis(songName){
+    if(songName === undefined){
+        songName = "The Sign";
         //Needs fixing
     }
     var dataArr = [];
-    spotify.search({type: 'track', query: song}, function(err, data){
+    fs.appendFile("log.txt", "\n\n===================================================================\nSpotify Songs matching "
+     + songName + "\n", function(err){
+        if(err){
+            return console.log(err);
+        }
+    })
+    spotify.search({type: 'track', query: songName}, function(err, data){
         if(err){
             return console.log("Error occrurred: " + err);
         }
@@ -134,7 +189,16 @@ function spotifyThis(song){
             dataArr.push(data[key]);
         }
         for(var i = 0; i < dataArr[0].items.length; i++){
-            console.log("Artist: " + dataArr[0].items[i].artists[0].name
+            fs.appendFile("log.txt", "\nArtist: " + dataArr[0].items[i].artists[0].name
+            + "\nSong: " + dataArr[0].items[i].name
+            + "\nAlbum: " + dataArr[0].items[i].album.name
+            + "\nSpotify Link: " + dataArr[0].items[i].external_urls.spotify 
+            + "\n===================================================================", function(err){
+                if(err){
+                    return console.log(err);
+                }
+            })
+            console.log("\nArtist: " + dataArr[0].items[i].artists[0].name
             + "\nSong: " + dataArr[0].items[i].name
             + "\nAlbum: " + dataArr[0].items[i].album.name
             + "\nSpotify Link: " + dataArr[0].items[i].external_urls.spotify 
@@ -142,3 +206,5 @@ function spotifyThis(song){
         }
     });
 }
+
+        
