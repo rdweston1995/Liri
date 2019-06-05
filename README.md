@@ -11,19 +11,19 @@ Deployment
 3. At command prompt run node liri.js <pass arguments as listed above>
 
 Screenshots
-concert-this
+
 ![concert-this screenshot](/concert-this.png)
 
 
-spotify-this-song
+
 ![spotify-this-song screenshot](/spotify-this-song.png)
 
 
-movie-this
+
 ![movie-this screenshot](/movie-this.png)
 
 
-do-what-it-says
+
 ![do-what-it-says screenshot](/do-what-it-says.png)
 
 
