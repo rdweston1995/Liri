@@ -3,7 +3,7 @@ Liri Bot
 
 Liri is a command line node app that takes in one of four parameters and returns the relative data. 
 Possible calls include 
-concert-this    spotify-this-song   movie-this  do-what-it-says
+concert-this,    spotify-this-song,   movie-this,  do-what-it-says.
 
 Deployment
 1. Clone repo
